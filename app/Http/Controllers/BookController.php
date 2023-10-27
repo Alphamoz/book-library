@@ -25,9 +25,15 @@ class BookController extends Controller
         $url = "http://book-library.test/api/books" ."?search=" .$keyword;
         $response = $client->request('GET', $url);
         $content = $response->getBody()->getContents();
-        $datas = json_decode($content);
+        $datas = json_decode($content, true);
         
-        $bookdatas = $datas->data;
+        $bookdatas = $datas['data'];
+        // make new key for each links to manage the api routes
+        foreach($bookdatas['links'] as $key=>$link){
+            // dd($link);
+            $bookdatas['links'][$key]['feurl'] = str_replace('/api', '', $link['url']);
+        }
+        // dd($bookdatas);
         
         // $bookdatas = $bookdatas
         // if($request->has('search')){
